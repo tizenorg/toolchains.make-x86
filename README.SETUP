@@ -1,0 +1,39 @@
+README
+
+The accelerators are part of the the transparent cross build extension of OBS (www.openbuildservice.org)
+
+Purpose:
+
+A) Provide natively accelerating cross compilation, by mimicing target arch packages, but need no native host HW or QEMU
+B) Allow transparently switching between native compilation and cross compilation
+C) But by mimicing target architecture packages, no need to change existing majority of a distribution completely to cross build
+
+The result is for distros like openSUSE or MeeGo to achive ca. 80% or better build times of the host processor (e.g. x86) but by only changing the real toolchain packages of a distro, e.g. less than 5% of pkgs.
+This works with OBS on .rpm and .deb based builds. I had as of yet been implemented for openSUSE, MeeGo and Ubuntu. Currently, the only build system supported is OBS. In case multiarch build is implemented into Debian / Ubuntu buildsystem, also a non OBS version can be implemented (Status End 2010). QEMU is currently stable enough so that PPC32, MIPS32, SH4 and ARM is working with that approach.
+
+License:
+
+see template header.
+
+How to Accelerate a package:
+
+Use the templates files:
+1) define name of original package (see oldname)
+
+File binaries_to_prepare:
+2) fill in the binaries which need to be available to the foreign chroot
+   e.g. /bin/bash   -  this will make a i586 bash available
+
+File libraries_to_prepare:
+3) fill in the libraries which need special treatment by patchelf
+
+File special_script:
+4) fill in the special scrit to call, if needed
+
+File files_to_ignore
+5) fill in the files you want to ignore when packing
+   e.g. /etc/ld.so.cache - this ignores /etc/ld.so.cache in the final package
+
+File baselibs.conf
+6) fill in a list of target architectures of the scheduler for which host arch to provide an accelerator for target arch
+   e.g. arch i586 targets armv5tel:arm armv6l:arm armv7l:arm armv7hl:arm armv7nhl:arm
